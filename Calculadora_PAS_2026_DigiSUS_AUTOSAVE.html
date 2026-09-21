@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Indicadores – Todas as Diretrizes – PAS 2026</title>
+<style>
+:root{--bg:#f4f7f9;--card:#fff;--text:#17212b;--muted:#637083;--line:#d9e1e8;--blue:#176b87;--blue2:#0f5168;--ok:#137a4b;--warn:#9a6100;--bad:#b42318;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:20px 16px;position:sticky;top:0;z-index:5}
+.wrap{max-width:1680px;width:96%;margin:auto}
+h1{font-size:23px;margin:0 0 5px} .sub{font-size:13px;color:var(--muted);line-height:1.45}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button,select{min-height:42px;border-radius:8px;font-size:14px}
+button{border:0;padding:9px 13px;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:white} .secondary{background:#e8f0f4;color:var(--blue2)}
+select{border:1px solid #cbd5df;background:white;padding:7px 10px;min-width:280px}
+main{padding:18px 16px 38px}
+.info{background:#fff7e8;border:1px solid #ead39c;border-radius:10px;padding:11px 13px;font-size:13px;line-height:1.45;margin-bottom:15px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.stat{background:white;border:1px solid var(--line);padding:9px 12px;border-radius:8px;font-size:13px}
+.dir{margin:24px 0 10px;padding-bottom:8px;border-bottom:2px solid var(--blue);font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.card h2{font-size:16px;margin:0 0 4px;line-height:1.3}
+.ind{font-size:13px;color:#445164;margin-bottom:8px;line-height:1.4}
+.meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.pill{font-size:12px;background:#eef3f6;border:1px solid #dae3e9;padding:5px 7px;border-radius:999px}
+.formula{background:#f8fafb;border:1px solid #e4e9ee;padding:9px;border-radius:8px;font-size:12px;line-height:1.42;margin-bottom:10px;overflow-wrap:anywhere}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fields.one{grid-template-columns:1fr}
+label{font-size:12px;font-weight:700;color:#4b5768;display:block;margin-bottom:4px}
+input{width:100%;min-height:42px;border:1px solid #cbd5df;border-radius:8px;padding:8px 9px;font-size:16px}
+.result{border-top:1px solid #edf0f2;margin-top:11px;padding-top:10px;display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.val{font-size:25px;font-weight:800} .lbl{font-size:11px;color:var(--muted)}
+.status{font-size:11px;font-weight:800;border-radius:999px;padding:6px 8px}
+.ok{background:#e8f5ee;color:var(--ok)} .bad{background:#fdecea;color:var(--bad)} .warn{background:#fff3d9;color:var(--warn)}
+.note{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.4}
+.quad{margin-top:12px;border-top:1px dashed #d7dee5;padding-top:11px}
+.quad-title{font-size:12px;font-weight:800;color:#334155;margin-bottom:8px}
+.quad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.quad-box{background:#f8fafb;border:1px solid #e5e9ee;border-radius:8px;padding:8px}
+.quad-box strong{display:block;font-size:12px;margin-bottom:6px}
+.quad-box input{min-height:38px;font-size:14px}
+.gapbox{margin-top:9px;background:#eef5f8;border:1px solid #d8e7ed;border-radius:8px;padding:9px;font-size:12px;line-height:1.45}
+.digisus{margin-top:10px;background:#f7f5ff;border:1px solid #ded8f5;border-radius:8px;padding:10px}
+.digisus-title{font-size:12px;font-weight:800;margin-bottom:8px}
+.digisus-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.digisus select{width:100%;min-width:0;min-height:38px}
+.digi-result{font-size:18px;font-weight:800;margin-top:4px}
+.digi-note{font-size:11px;color:#5e5873;margin-top:6px;line-height:1.4}
+
+/* Organização em dois cartões por linha */
+.dir-title{grid-column:1/-1}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px 8px;margin-bottom:10px}
+.card .formula{margin:10px 0 12px}
+.card .inputs{gap:10px}
+.card .quad-box{background:#f8fafb;border:1px solid #dce5e9}
+.card .digisus{background:#f7f5ff}
+.card [data-digi-total]{min-height:28px}
+@media(max-width:1350px){
+  .grid{grid-template-columns:1fr}
+}
+@media(min-width:1351px){
+  .card h3{font-size:15px}
+  .card .desc,.card .indicator,.card .formula{font-size:12px}
+  .card .quad-title,.card .digisus-title{font-size:13px}
+  .card .quad-box{padding:10px}
+  .card input,.card select{font-size:13px;padding:7px 8px}
+  .card .digi-result{font-size:16px}
+}
+
+/* Ajustes de exibição: leitura em tela larga */
+.card h3{font-size:18px;line-height:1.35;margin-bottom:8px}
+.desc,.indicator,.formula{line-height:1.55}
+.formula{font-size:13px;padding:11px 13px}
+.quad{margin-top:16px;padding-top:16px}
+.quad-title{font-size:14px;margin-bottom:10px}
+.quad-box{padding:14px;border-radius:10px}
+.quad-box strong{font-size:13px}
+.gapbox{margin-top:14px;padding:12px 14px;font-size:13px}
+.digisus{margin-top:14px;padding:14px 16px}
+.digisus-title{font-size:14px}
+.digi-note{font-size:12px}
+input,select{font-size:14px;padding:9px 10px}
+label,.lbl{font-size:12px}
+@media(max-width:700px){
+  .quad-grid,.digisus-grid{grid-template-columns:1fr}
+}
+@media(max-width:800px){.quad-grid{grid-template-columns:1fr}}
+.summary{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{border-bottom:1px solid #edf0f2;text-align:left;padding:7px;vertical-align:top}
+th{background:#f7f9fa}
+.search{flex:1;min-width:220px;min-height:42px;border:1px solid #cbd5df;border-radius:8px;padding:8px 10px;font-size:14px}
+@media(max-width:800px){header{position:static}.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr}select{min-width:0;width:100%}}
+@media print{header{position:static}.tools,.info{display:none}body{background:#fff}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+  <h1>Calculadora de Indicadores – PAS 2026 – Lagarto/SE</h1>
+  <div class="sub">Todas as diretrizes e indicadores identificados na Programação Anual de Saúde 2026. A fórmula original da PAS aparece em cada cartão.</div>
+  <div class="tools">
+    <select id="filterDir"><option value="">Todas as diretrizes</option></select>
+    <input class="search" id="search" placeholder="Buscar indicador, código ou palavra...">
+    <button class="primary" id="print">Imprimir / Salvar PDF</button>
+    <button class="secondary" id="exportData">Exportar backup</button>
+    <label class="secondary" style="cursor:pointer;display:inline-flex;align-items:center">
+      Importar backup
+      <input id="importData" type="file" accept=".json,application/json" style="display:none">
+    </label>
+    <button class="secondary" id="clear">Limpar dados salvos</button>
+    <span id="saveStatus" style="font-size:12px;font-weight:700;opacity:.9">Dados salvos automaticamente neste navegador</span>
+  </div>
+</div>
+</header>
+<main class="wrap">
+<div class="info"><strong>Salvamento automático:</strong> os valores digitados ficam gravados neste navegador e são restaurados quando você abrir novamente esta calculadora. Para segurança, use também <strong>Exportar backup</strong>. <br><br><strong>Regra do painel:</strong> o cálculo segue a fórmula escrita na PAS. Quando o documento apresenta fórmula possivelmente invertida, unidade incompatível ou meta sem valor anual, o sistema não corrige silenciosamente: mantém a fórmula e mostra uma observação. Para fórmulas de divisão, informe o primeiro valor como numerador e o segundo como denominador, conforme a fórmula exibida.</div>
+<div class="stats">
+  <div class="stat"><strong id="nDir">0</strong> diretrizes</div>
+  <div class="stat"><strong id="nInd">0</strong> indicadores/calculadores</div>
+  <div class="stat">Resultado atualizado automaticamente</div>
+</div>
+<div id="content"></div>
+<section class="summary">
+<h2 style="margin-top:0;font-size:18px">Resumo dos resultados</h2>
+<div style="overflow:auto">
+<table><thead><tr><th>Diretriz</th><th>Código</th><th>Indicador</th><th>Meta 2026</th><th>Resultado</th><th>Situação</th></tr></thead><tbody id="sumBody"></tbody></table>
+</div>
+</section>
+</main>
+<script>
+const DATA = [{"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.1", "description": "Manter a cobertura populacional estimada pelas equipes de Atenção Básica ≥ 80% ao ano, no período de 2026 a 2029.", "indicator": "Cobertura populacional estimada pelas equipes de Atenção Básica", "formula": "População adscrita às equipes de Atenção Básica ÷ população residente estimada do município × 100", "meta": "84,11", "unit": "Percentual", "target2026": "84,11", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.1-SB", "description": "Ampliar progressivamente o número de Equipes de Saúde Bucal, alcançando a equiparação com as 30 Equipes de Saúde da Família até o final do plano.", "indicator": "Proporção de Equipes de Saúde Bucal implantadas em relação às Equipes de Saúde da Família.", "formula": "(Proporção de ESB (%) = (Nº de ESB implantadas​) / Nº de ESF do ano base (30) ×100)", "meta": "60%", "unit": "Percentual", "target2026": "70%", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.2", "description": "Ampliar a proporção de crianças em idade escolar (6 a 12 anos) beneficiadas por ações coletivas de escovação dental supervisionada na rede pública de ensino do município.", "indicator": "Proporção da ação escovação dental supervisionada", "formula": "Média de participantes na ação coletiva escovação dental supervisionada / 12 / População (multiplica por100)", "meta": "2%", "unit": "Percentual", "target2026": "3%", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.3", "description": "Alcançar no mínimo 70% dos nascidos vivos de mães realizaram 7 ou mais consultas de pré-natal durante a gestação, ao longo da vigência do Plano.", "indicator": "Proporção de nascidos vivos de mães com 7 ou mais consultas de", "formula": "(Número de nascidos vivos de mães com 7 ou mais consultas de pré-natal ÷ Total de nascidos vivos no período) × 100", "meta": "70", "unit": "Proporção", "target2026": "75", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.4", "description": "Manter a proporção de gravidez na adolescência menor ou igual ao ano anterior, no período de 2026 a 2029.", "indicator": "Proporção de gravidez na adolescência entre as faixas etárias 10 a 19 anos.", "formula": "(Nº de nascidos vivos de mães de 10a a 19 anos ÷ Total de nascidos vivos) × 100", "meta": "15", "unit": "Percentual", "target2026": "14", "type": "ratio", "multiplier": 100, "direction": "down"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.5", "description": "Ampliar a oferta de mamografia visando alcançar uma cobertura satisfatória da população alvo considerando a recomendação de realização do exame a cada dois anos.", "indicator": "Razão de exames de mamografias rastreamento realizados em mulheres de 50 a 69 anos", "formula": "(Nº de mamografias bilateral para rastreamento (0204030188) realizada em mulheres de 50 a 69 anos ÷ pela População feminina de 50 a 69 anos) ÷ 2", "meta": "30", "unit": "Razão", "target2026": "30", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.6", "description": "Ampliar a detecção precoce do câncer do colo do útero por meio da realização de exames citopatológicos em mulheres na faixa etária preconizada.", "indicator": "Razão de exames citopatológicos do colo do útero em mulheres de 25 a 64 anos.", "formula": "(Nº de exames citopatológicos realizados em mulheres de 25 a 64 anos no período ÷ População feminina da mesma faixa etária)", "meta": "0,30", "unit": "Razão", "target2026": "0,30", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.7", "description": "Realizar consultas de puericultura até o segundo ano de vida das crianças.", "indicator": "Proporção de crianças em acompanhamento de puericultura.", "formula": "(Nº de crianças até 2 anos acompanhadas com a puericultura / Total de crianças​ até de 2 ano acompanhadas x 1.000.", "meta": "2,0", "unit": "Percentual", "target2026": "2,2", "type": "ratio", "multiplier": 1000, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.8", "description": "Manter cobertura ≥ 70% das pessoas hipertensas com pressão arterial aferida em cada semestre.", "indicator": "Percentual de pessoas hipertensas com pressão arterial aferida em cada semestre.", "formula": "Nº de pessoas com diagnóstico de HA que apresentaram ao menos um registro de PA no sistema de informação no semestre avaliado / Total de pessoas com diagnóstico de HA cadastradas e acompanhadas pelas ESF.", "meta": "70", "unit": "Percentual", "target2026": "70", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.9", "description": "Ampliar e manter o acompanhamento clínico das pessoas com diabetes mellitus cadastradas, assegurando a solicitação regular do exame de hemoglobina glicada (HbA1c).", "indicator": "Percentual de pessoas com diabetes mellitus cadastradas com solicitação de hemoglobina glicada", "formula": "Nº de pessoas com diagnóstico de diabetes mellitus que possuem registro de solicitação de exame de hemoglobina glicada (HbA1c) no período avaliado / Total de pessoas com diagnóstico de DM cadastradas no mesmo período.", "meta": "62", "unit": "Percentual", "target2026": "64", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "1.1.10", "description": "Manter ou aumentar o percentual de cobertura de acompanhamento das condicionalidades de saúde do Programa Bolsa Família (PBF),.", "indicator": "Cobertura de acompanhamento das condicionalidades de Saúde do Programa Bolsa Família", "formula": "Nº de famílias beneficiárias do PBFacompanhadas pela atenção básica na última vigência x 100) (/ Nº total de famílias Beneficiá rias do PBF", "meta": "80", "unit": "Percentual", "target2026": "80", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "2.1", "description": "Ampliar o número de equipes Multiprofissionais (eMulti) seguindo parâmetros do Ministério da Saúde", "indicator": "Número de equipes Multiprofissionais (eMulti) implantadas", "formula": "Contagem direta do número de equipes eMulti implantadas e registradas no CNES.", "meta": "2", "unit": "Número", "target2026": "2", "type": "direct", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "2.2", "description": "Ampliar e manter a oferta contínua de práticas corporais, atividades físicas e ações de promoção da saúde no Programa Academia da Saúde ao longo do período do PMA.", "indicator": "Percentual de polos do Programa Academia da Saúde implantados em relação ao previsto no PMA.", "formula": "Nº de polos da Academia da Saúde implantados e em funcionamento no período avaliado / Nº total de polos da Academia da Saúde previstos para implantação no PMA.8", "meta": "1", "unit": "Número", "target2026": "2", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "2.3", "description": "Manter 100% o pacto intersetorial do Programa Saúde na Escola, assegurando a realização contínua de ações de saúde nas escolas pactuadas.", "indicator": "Percentual de escolas pactuadas no PSE com ações de saúde realizadas no ano", "formula": "(Nº total de escolas pactuadas no PSE ÷ Nº de escolas pactuadas no PSE com ações realizadas no período) × 100", "meta": "100", "unit": "Percentual", "target2026": "100", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 1 – Atenção Primária à Saúde", "code": "2.4", "description": "Ampliar a equipe para desenvolver atividades de PICS49 na Atenção Primária à Saúde.", "indicator": "Número de profissionais da APS habilitados para desenvolver Práticas Integrativas e Complementares em Saúde (PICS)", "formula": "Número de profissionais habilitados em PICS", "meta": "1", "unit": "Número", "target2026": "2", "type": "direct", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.1", "description": "Alcançar/Manter a média anual de consultas médicas nas especialidades básicas por habitante/ano, garantindo o acesso ampliado à atenção ambulatorial especializada e reduzindo o tempo de espera.", "indicator": "Média anual de consultas médicas por habitante nas especialidades", "formula": "Nº de consultas médicas nas especialidades básica/ população total.", "meta": "0,50", "unit": "Proporção", "target2026": "0,50", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.2", "description": "Alcançar, anualmente, a taxa de expansão prevista para as consultas especializadas, exames diagnósticos e cirurgias de média e alta complexidade, como catarata, pterígio e outras afecções oculares. (Projeto Visão do Bem)", "indicator": "Taxa de Expansão de Cirurgias Eletivas de cataratas", "formula": "(Nº de cirurgias eletivas realizadas no ano base) – (Nº de cirurgias eletivas realizadas no ano anterior) x (100) (÷ Nº de cirurgias Cataratas realizadas no ano anterior)", "meta": "80", "unit": "Percentual", "target2026": "82", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.3", "description": "Viabilizar a execução qualificada e o cumprimento das metas assistenciais pactuadas na contratualização com o hospital filantrópico de oncologia, assegurando o acesso oportuno e contínuo aos serviços oncológicos financiados com recursos públicos, conforme critérios de produção, qualidade e regularidade definidos em contrato.", "indicator": "Percentual de cumprimento das metas assistenciais pactuadas no contrato de gestão com o hospital filantrópico de oncologia.", "formula": "(Nº de procedimentos oncológicos pactuados no contrato / Nº de procedimentos oncológicos realizados e validados​×100)", "meta": "90", "unit": "Percentual", "target2026": "90", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.4", "description": "Ampliar progressivamente a realização de exames laboratoriais no município, assegurando o aumento da oferta de serviços diagnósticos ao longo do período avaliado em ≥ 5% ao ano.", "indicator": "Taxa de crescimento da realização de exames laboratoriais.", "formula": "(Nº de exames laboratoriais realizados no ano corrente−Nº de exames laboratoriais realizados no ano anterior ​×100) Nº de exames laboratoriais realizados no ano anterior)", "meta": "5%", "unit": "Percentual", "target2026": "5%", "type": "growth", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.5", "description": "Ampliar progressivamente a realização de exames de imagem em ≥ 5% ao ano.", "indicator": "Taxa de crescimento da realização de exames de imagem.", "formula": "(Nº de exames laboratoriais realizados no ano corrente−Nº de exames laboratoriais realizados no ano anterior ​×100) Nº de exames laboratoriais realizados no ano anterior)", "meta": "5%", "unit": "Percentual", "target2026": "5%", "type": "growth", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.6", "description": "Manter e ampliar a produção assistencial do CAPS II e CAPS AD.", "indicator": "Taxa de atendimentos realizados nos CAPS. (Significa que, para cada 1.000 moradores de Lagarto, foram realizados aproximadamente 107 atendimentos nos CAPS II e CAPS AD no período avaliado)", "formula": "Nº de atendimentos realizados no CAPS II e CAPS AD ÷ População residente × 1.000", "meta": "107", "unit": "Número", "target2026": "158", "type": "ratio", "multiplier": 1000, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.7", "description": "Realizar no mínimo 4 ações de matriciamento ao ano em Saúde Mental por cada Centro de Atenção Psicossocial (CAPS) para Clínicas de Saúde.", "indicator": "Proporção de (CAPS) que realizaram, no mínimo, 4 ações anuais de matriciamento em Saúde Mental junto às Clínicas de Saúde / equipes de Atenção Primária à Saúde", "formula": "Nº de CAPS com ≥ 4 ciclos ÷ Nº total de CAPS", "meta": "8", "unit": "Número", "target2026": "8", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.8", "description": "Alcançar, anualmente, no mínimo 90% da produção programada de atendimentos domiciliares pelo Serviço de Atenção Domiciliar (SAD/EMAD), no período de vigência do plano.", "indicator": "Percentual de atendimentos domiciliares realizados pelo SAD/EMAD em relação à produção programada.", "formula": "Nº de atendimentos domiciliares realizados pelo SAD ÷ Nº de atendimentos domiciliares programados×100.", "meta": "90", "unit": "Percentual", "target2026": "85", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.9", "description": "Ampliar progressivamente o número de atendimentos ambulatoriais de fisioterapia realizados no Centro de Fisioterapia em ≥ 5% ao ano.", "indicator": "Percentual anual da produção ambulatorial de fisioterapia", "formula": "(Nº de atendimentos de fisioterapia realizados no ano vigente – Nº de atendimentos realizados no ano anterior) ÷ Nº de atendimentos realizados no ano anterior × 100", "meta": "≥ 5%", "unit": "Percentual", "target2026": "", "type": "growth", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.10", "description": "Manter o percentual de encaminhamentos do PA para a rede de referência em urgência ≤ 20% ao ano", "indicator": "Percentual de encaminhamentos do PA para a rede de referência em urgência.", "formula": "(Nº de atend.no PA com encaminha mento para a rede de referência ÷ Nº total de atendimentos realizados no PA× 100)", "meta": "10", "unit": "Percentual", "target2026": "9", "type": "ratio", "multiplier": 100, "direction": "down"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.11", "description": "Ampliar em, no mínimo, 5% ao ano o número de atendimentos especializados realizados na Rede de Cuidados à Pessoa com Deficiência (CER III e serviço para TEA), no período de 2026 a 2029, em relação ao ano anterior.", "indicator": "Taxa de ampliação anual dos atendimentos especializados na Rede de Cuidados à Pessoa com Deficiência (CER III e Serviço para TEA).", "formula": "(Nº de atendimentos realizados no CER III e serviço ​o TEA no ano corrente−Nº de atendimentos do ano anterior​ ÷ Nº de atend.do ano anterior x 100)", "meta": "7.004", "unit": "Percentual", "target2026": "5%", "type": "growth", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 2 – Atenção Especializada de Média e Alta Complexidade", "code": "2.1.12", "description": "Ampliar progressivamente a assistência odontológica especializada, aumentando anualmente o percentual de procedimentos realizados, considerando a produção histórica e a capacidade instalada dos serviços, no período de vigência do plano.", "indicator": "Percentual de ampliação dos procedimentos odontológicos especializados realizados.", "formula": "(Nº de procedimentos odontológicos especializados ano corrente - Nº de procedimentos no ano anterior ÷ Nº de procedimentos no ano anterior​ x 100)", "meta": "≥ 5%", "unit": "Percentual", "target2026": "5%", "type": "growth", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.1.1", "description": "Manter a Taxa de Mortalidade Infantil abaixo de dois dígitos para os próximos 4 anos.", "indicator": "Taxa de Mortalidade Infantil", "formula": "(Total de óbitos de crianças com idade < 1 ano ocorridos no período / Total de n.v. no mesmo período x 1.000)", "meta": "14/1000", "unit": "Proporção", "target2026": "14", "type": "ratio", "multiplier": 1000, "direction": "down"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.1.2", "description": "Qualificar e inserir ≥ 90% dos registros de óbitos no Sistema de Informação sobre Mortalidade (SIM), com causas básicas devidamente preenchidas, até 60 dias após o final do mês de ocorrência.", "indicator": "Percentual de óbitos registrados no SIM com causa básica informada e inseridos oportunamente (até 60 dias).", "formula": "(Nº total de óbitos ocorridos no período /Nº de óbitos registrados no SIM com causa básica preenchida em até 60 dias​ X 100)", "meta": "90", "unit": "Percentual", "target2026": "90", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.2.1", "description": "Aprimorar a identificação das ocupações e das atividades econômicas associadas aos agravos relacionados ao trabalho, qualificando o preenchimento das notificações e fortalecendo a capacidade de análise situacional do município.", "indicator": "Proporção de preenchimento dos campos “Ocupação” e “Atividade Econômica (CNAE)” nas notificações de agravos relacionados ao trabalho (acidente de trabalho, acidente de trabalho com exposição a material biológico e intoxicação exógena), segundo município de notificação.", "formula": "(Nº de notificações desses agravos com ambos os campos preenchidos (“Ocupação” e “CNAE”) x 100) (/ Total de notificações dos agravos selecionados (acidente de trabalho, acidente com exposição a material biológico e intoxicação exógena. (VISAT)", "meta": "90", "unit": "", "target2026": "90", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.3.1", "description": "Atingir ≥ 82% dos contatos dos casos novos de hanseníase, nos anos das coortes, examinados", "indicator": "Proporção de contatos examinados de casos novos de hanseníase diagnosticados nos anos das coortes", "formula": "(Nº total de contatos registrados dos casos novos de hansenÍase diagnosticados nos anos das coortes/Nº de contatos examinados dos casos novos de hanseníase diagnosticados nos anos das coortes​×100.", "meta": "82", "unit": "", "target2026": "82", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.3.2", "description": "Manter ≥ 70% dos contatos dos casos novos de tuberculose (TB) pulmonar com confirmação laboratorial examinados", "indicator": "Proporção de contatos examinados de casos novos de tuberculose pulmonar com confirmação laboratorial", "formula": "(Nº de contatos examinados de casos novos de TB pulmonar diagnosticados por critério laboratorial Denominador/ Nº de contatos identificados de casos novos de TB pulmonar diagnosticados por critério laboratorial x 100)", "meta": "70", "unit": "Percentual", "target2026": "70", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.3.3", "description": "Eliminar a transmissão vertical do HIV, alcançando taxa igual a zero de casos novos de AIDS em menores de 5 anos.", "indicator": "Número e taxa de casos novos de AIDS em menores de 5 anos de idade.", "formula": "(Nº de casos novos confirmados de AIDS em crianças menores de 5 anos / Total de n.v no mesmo período x 100.000.)", "meta": "0", "unit": "", "target2026": "0", "type": "ratio", "multiplier": 100000, "direction": "down"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.3.4", "description": "Aumentar a cobertura vacinal do município de Campinas com o intuito de garantir a manutenção de elevadas e homogêneas coberturas vacinais como estratégia para manter e ou avançar em relação à situação atual, atingindo a cobertura vacinal preconizada para as vacinas: Pentavalente (3ª dose), Pneumocócica 10-valente (2ª dose), Poliomielite (3ª U dose) e Tríplice viral (1ª dose). ( muita informação )", "indicator": "Proporção de vacinas selecionadas do Calendário Nacional de Vacinação para crianças menores de dois anos de idade - Pentavalente (3ª dose), Pneumocócica 10-valente (2ª dose), Poliomielite (3ª U dose) e Tríplice viral (1ª dose) - com cobertura vacinal preconizada", "formula": "(Número de vacinas selecionadas que atingiram a cobertura preconizada ÷ total de vacinas analisadas) × 100.)", "meta": "95", "unit": "", "target2026": "95", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.3.5", "description": "Assegurar a execução qualificada das atividades de Vigilância em Saúde Ambiental, garantindo que os ciclos de visitas domiciliares para controle vetorial da dengue alcancem, no mínimo, 80% de cobertura de imóveis visitados, de modo a fortalecer a prevenção de arboviroses e reduzir o risco de transmissão no município.", "indicator": "Número de ciclos de visitas para controle vetorial da dengue que atingiram a cobertura mínima de 80% de imóveis visitados.", "formula": "(Imóveis Visitados x100) / (Imóveis previsto para o ciclo)", "meta": "80", "unit": "", "target2026": "80", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.3.6", "description": "Reduzir um ponto percentual do valor do ano base ou a manutenção de percentual zero.", "indicator": "Percentual de casos de sífilis congênita em relação ao total de casos de sífilis em gestantes, na população residente em determinado espaço geográfico, no ano considerado", "formula": "(Nº de casos confirmados de sífilis congênita, no ano / Nº total de casos confirmados de sífilis em gestantes, no mesmo período) x 100.", "meta": "50", "unit": "Percentual", "target2026": "49", "type": "ratio", "multiplier": 100, "direction": "down"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.4.1", "description": "Avaliar a qualidade da água das soluções alternativas coletivas (SAC) de abastecimento de água para consumo humano", "indicator": "Proporção de SAC (Solução alternativa coletiva) cadastradas no SISÁGUA avaliadas semestralmente", "formula": "(Número de SAC cadastradas avaliadas no semestre ÷ total de SAC cadastradas no SISÁGUA) × 100).", "meta": "100", "unit": "", "target2026": "", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.4.2", "description": "Atender oportunamente as denúncias do setor de fiscalização de alimentos", "indicator": "Proporção de atendimento das denúncias recebidas pelo setor de fiscalização de alimentos", "formula": "(Número de denúncias atendidas dentro de 20 dias ÷ total de denúncias recebidas ) × 100.", "meta": "75", "unit": "Peercentual", "target2026": "75", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 3 – Vigilância em Saúde", "code": "3.4.3", "description": "Ampliar a emissão de licenças sanitárias para serviços sujeitos a controle sanitário, assegurando a regularização cadastral, a renovação periódica e o cumprimento dos requisitos sanitários, de modo a fortalecer a proteção à saúde da população e a segurança sanitária no município.", "indicator": "Percentual de licenças sanitárias emitidas para serviços sujeitos a controle sanitário (iniciais ou renovações).", "formula": "(Nº de licenças sanitárias emitidas (iniciais + renovadas x 100) / (Total de serviços sujeitos a controle sanitário cadastrados)", "meta": "5", "unit": "Percentual", "target2026": "7", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 4 – Assistência Farmacêutica e outros insumos", "code": "4.1.1", "description": "Ampliar e qualificar o atendimento clínico farmacêutico na Rede Municipal de Saúde, assegurando maior cobertura e resolutividade por profissional atuante.", "indicator": "Percentual médio de atendimentos farmacêuticos (consultas) realizadas por farmacêutico na rede municipal de saúde. Código: SIGTAP 03.01.01.003-0 03.01.01.004-8 03.01.04.007-9 (acolhimento e orientação farmacêutica individual)", "formula": "Número total de consultas farmacêuticas realizadas no período ÷ Número de farmacêuticos atuantes na rede municipal de saúde) × 100.", "meta": "50", "unit": "Percentual", "target2026": "55", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 5 – Desenvolvimento de Pessoas / Educação Permanente / Saúde do Trabalhador", "code": "5.1.2", "description": "Atuar para reposição e ampliação do quadro de pessoal da Secretaria Municipal de Saúde (SMS), visando um crescimento anual de 5% no número total de profissionais de saúde, garantindo melhores condições operacionais para a rede municipal.", "indicator": "Número de profissionais de saúde ativos na SMS.", "formula": "(Total de Profissionais no Ano Atual−Total de Profissionais no Ano Anterior​ x100) / (Total de Profissionais no Ano Anterior)", "meta": "20", "unit": "Percentual", "target2026": "5", "type": "growth", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 5 – Desenvolvimento de Pessoas / Educação Permanente / Saúde do Trabalhador", "code": "5.2.1", "description": "Institucionalizar a Política Municipal de Educação Permanente em Saúde, estruturando e legalizando mecanismos normativos e operacionais que assegurem a formação permanente das equipes do SUS Lagarto, em conformidade com as diretrizes nacionais e com as necessidades loco-regionais.", "indicator": "Política Municipal de Educação Permanente em Saúde instituída por lei.", "formula": "(Projeto de Lei encaminhado para o Poder Legislativo)", "meta": "1", "unit": "Número", "target2026": "1", "type": "direct", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 5 – Desenvolvimento de Pessoas / Educação Permanente / Saúde do Trabalhador", "code": "5.2.2", "description": "Alcançar média ≥ 70% dos cenários de prática pactuados, pela gestão municipal para PET-Saúde e outros, conforme a capacidade instalada da rede de saúde, no período de vigência do programa.", "indicator": "Percentual médio de cenários de prática disponibilizados para o PET-Saúde", "formula": "Nº total de cenários de prática pactuados pela gestão municipalNº de cenários de prática efetivamente disponibilizados para o PET-Saúde​ e outros×100", "meta": "70", "unit": "Percentual", "target2026": "70", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 5 – Desenvolvimento de Pessoas / Educação Permanente / Saúde do Trabalhador", "code": "5.2.3", "description": "Manter preceptores e tutores de programas de residências em saúde qualificados atingindo 100% ao final do plano.", "indicator": "Percentual de preceptores e tutores de programas de residências em saúde qualificados.", "formula": "(Nº de preceptores e tutores qualificados​ / Nº de preceptores e tutores vinculados a residências x 100)", "meta": "100", "unit": "", "target2026": "", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 5 – Desenvolvimento de Pessoas / Educação Permanente / Saúde do Trabalhador", "code": "5.2.3", "description": "Viabilizar a inserção de estudantes dos cursos de graduação da área da saúde pactuados com a gestão municipal em estágios supervisionados nos serviços da rede municipal de saúde, conforme a capacidade instalada e os termos de cooperação vigentes.", "indicator": "Número de estudantes da área da saúde inseridos em estágios supervisionados na rede municipal de saúde, por tipo de graduação.", "formula": "(Nº de estudantes inseridos em estágios supervisionados, por curso / Nº de estudantes pactuados com a gestão x 100)", "meta": "100", "unit": "Percentual", "target2026": "100", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 5 – Desenvolvimento de Pessoas / Educação Permanente / Saúde do Trabalhador", "code": "5.2.4", "description": "Ofertar, no mínimo, 50% das ações de Cursos, oficinas, treinamentos, atualizações, capacitações e atualização demandadas pelos serviços da Rede Municipal de Saúde de Lagarto, visando à qualificação contínua dos profissionais da SMS.", "indicator": "Proporção de ações de capacitação/atualização demandadas pela Rede Municipal de Saúde que foram efetivamente ofertadas pela SMS.", "formula": "(Nº de ações de capacitação ofertadas x 100) (/Número de ações de capacitação demandadas)", "meta": "60", "unit": "Percentual", "target2026": "60", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.1.1", "description": "Realizar ações de formação e atualização para conselheiros municipais de saúde, garantindo que pelo menos 80% dos conselheiros participem de capacitações anuais.", "indicator": "Percentual de conselheiros capacitados no período.", "formula": "(Nº de conselheiros capacitados​ / Total de conselheiros existentes × 100)", "meta": "70", "unit": "Percentual", "target2026": "70", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.1.2", "description": "Fortalecer a atuação do colegiado da Conselho Municipal de Saúde (CMS)", "indicator": "Percentual de participação de conselheiros nas reuniões.", "formula": "(Nº de reuniões da CMS com participação ÷ Nº total de reuniões do CMS no período) × 100", "meta": "", "unit": "", "target2026": "", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.1.3", "description": "Garantir a realização da Conferência Municipal de Saúde no período estabelecido, conforme diretrizes do Conselho Municipal de Saúde e normativas do SUS.", "indicator": "Número de Conferências Municipais de Saúde realizadas conforme demandas dos níveis de gestão.", "formula": "(Contagem das conferências executadas conforme definições do CNS no período).", "meta": "1", "unit": "Número", "target2026": "1", "type": "direct", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.1.4", "description": "Alcançar, anualmente, no mínimo 80% das manifestações registradas na Ouvidoria do SUS respondidas dentro do prazo estabelecido.", "indicator": "Percentual de manifestações da Ouvidoria do SUS respondidas no prazo de 20 a 30 dias.", "formula": "(Nº total de manifestações registradas / Nº de manifestações respondidas dentro do prazo​×100)", "meta": "80", "unit": "", "target2026": "", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.1.5", "description": "Fortalecer a atuação do colegiado da Comissão Intergestores Regional (CIR)", "indicator": "Percentual de participação do município nas reuniões da CIR com registro de presença e pactuações realizadas.", "formula": "(Nº de reuniões da CIR com participação ÷ Nº total de reuniões da CIR no período) × 100", "meta": "", "unit": "", "target2026": "", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.2.1", "description": "Garantir o investimento mínimo em saúde de 15% do orçamento de acordo com a lei vigente. (Base de cálculo definida pela LC 141/2012, composta por: IPTU | ISS | ITBI | IRRF municipal | Transferências FPM, ICMS, IPVA, IPI-Exportação, Lei Kandir, dentre outras previstas)", "indicator": "Percentual de investimento em saúde do Tesouro Municipal.", "formula": "(Despesas própria do tesouro municipal na saúde / receita de impostos e transferências constitucionais legais x 100)", "meta": "15", "unit": "Percentual", "target2026": "15", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 6 – Gestão / Controle Social / Gestão Financeira", "code": "6.3.1", "description": "Ampliar e manter o índice de contratualização regular das unidades prestadoras de serviços de saúde privadas e filantrópicas do município.", "indicator": "Índice de contratualização das unidades privadas e filantrópicas de saúde", "formula": "(Nº de unidades prestadoras privadas e filantrópicas com contratos regulares vigentes ÷ Total de unid.prestadoras privadas e filantrópicas existentes no município) × 100", "meta": "≥ 90%", "unit": "Percentual", "target2026": "90", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 7 – Infraestrutura / Inovação / Saúde Digital", "code": "7.1.1", "description": "Executar, obras de construção dos Estabelecimentos Assistenciais de Saúde EAS, previstas no cronograma físico anual,", "indicator": "Percentual de execução das obras de construção de Estabelecimentos Assistenciais de Saúde.", "formula": "(Nºde obras de EAS/ESF planejadas para o ano /Nº de obras executadas no ano)​×100", "meta": "20", "unit": "Percentual", "target2026": "40", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 7 – Infraestrutura / Inovação / Saúde Digital", "code": "7.1.2", "description": "Executar ações de reforma, manutenção e ampliação nos Estabelecimentos Assistenciais de Saúde do município, conforme diagnóstico técnico de infraestrutura.", "indicator": "Número de Estabelecimentos Assistenciais de Saúde com reforma, manutenção ou ampliação executadas no período.", "formula": "(Nº de EAS com reforma, manutenção ou ampliação executada no período ÷ Nº total de EAS com necessidade identificada [35])", "meta": "35", "unit": "Número", "target2026": "08", "type": "ratio", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 7 – Infraestrutura / Inovação / Saúde Digital", "code": "7.2.1", "description": "Garantir a provisão, reposição e qualificação dos mobiliários e equipamentos médico-hospitalares necessários ao funcionamento adequado dos Estabelecimentos Assistenciais de Saúde (EAS) do município.", "indicator": "Percentual de Estabelecimentos Assistenciais de Saúde com mobiliários e equipamentos médico-hospitalares adequados às necessidades.", "formula": "(Nº de EAS com mobiliários e equipamentos adequados​ / Nº total de EAS do município x 100)", "meta": "35", "unit": "Percentual", "target2026": "30", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 7 – Infraestrutura / Inovação / Saúde Digital", "code": "7.3.1", "description": "Implantar e manter, ao longo do ano, pontos de telessaúde em unidades estratégicas da rede municipal de saúde, ampliando o acesso a serviços especializados.", "indicator": "Pontos de telessaúde implantados no ano.", "formula": "Número de pontos de telessaúde implantados no ano.", "meta": "6", "unit": "Número", "target2026": "1", "type": "direct", "multiplier": 1, "direction": "up"}, {"diretriz": "Diretriz 7 – Infraestrutura / Inovação / Saúde Digital", "code": "7.3.2", "description": "Informatizar toda a rede assistencial implantando PEC em 100% das unidades assistenciais.", "indicator": "Percentual de Unidades Assistenciais utilizando o Prontuário Eletrônico do Cidadão", "formula": "(Nº de Unidades Assistenciais com PEC implantado e ativo / Total de Unidades Assistenciais da Rede x100)", "meta": "80", "unit": "Percentual", "target2026": "20", "type": "ratio", "multiplier": 100, "direction": "up"}, {"diretriz": "Diretriz 7 – Infraestrutura / Inovação / Saúde Digital", "code": "7.4.1", "description": "Modernizar tecnologicamente a Rede Municipal de Saúde, ampliando progressivamente o uso de soluções digitais para qualificar a gestão, o cuidado e o acesso aos serviços de saúde.", "indicator": "Percentual de unidades de saúde com soluções digitais implantadas e em funcionamento", "formula": "(Nº de unidades de saúde com soluções digitais implantadas ÷ Nº total de unidades de saúde) × 100", "meta": "35", "unit": "Percentual", "target2026": "50", "type": "ratio", "multiplier": 100, "direction": "up"}];
+
+const STORAGE_KEY='pas2026_lagarto_digisus_autosave_v1';
+let SAVED={};
+
+function loadSaved(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    SAVED=raw?JSON.parse(raw):{};
+  }catch(e){ SAVED={}; }
+}
+function storageKey(ind,idx){ return `${idx}::${ind.code}`; }
+function showSaveStatus(msg){
+  const el=document.getElementById('saveStatus');
+  if(el) el.textContent=msg;
+}
+function persistCard(card,ind,idx){
+  const annual=[...card.querySelectorAll('input[data-v]')].map(x=>x.value);
+  const quarters={};
+  [1,2,3].forEach(q=>{
+    quarters[q]=[...card.querySelectorAll(`input[data-q="${q}"]`)].map(x=>x.value);
+  });
+  SAVED[storageKey(ind,idx)]={
+    annual,
+    quarters,
+    digiMeta:card.querySelector('[data-digi-meta]')?.value ?? '',
+    polarity:card.querySelector('[data-polaridade]')?.value ?? '',
+    savedAt:new Date().toISOString()
+  };
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(SAVED));
+    const now=new Date();
+    showSaveStatus(`Salvo automaticamente às ${now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`);
+  }catch(e){
+    showSaveStatus('Falha no salvamento automático');
+  }
+}
+function clearSavedData(){
+  SAVED={};
+  try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+}
+function downloadBackup(){
+  const payload={
+    app:'Calculadora PAS 2026 Lagarto/SE',
+    version:1,
+    exportedAt:new Date().toISOString(),
+    data:SAVED
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='Backup_Calculadora_PAS_2026_Lagarto.json';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+}
+function importBackupFile(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const obj=JSON.parse(r.result);
+      const incoming=obj && obj.data ? obj.data : obj;
+      if(!incoming || typeof incoming!=='object' || Array.isArray(incoming)) throw new Error('Formato inválido');
+      SAVED=incoming;
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(SAVED));
+      draw();
+      showSaveStatus('Backup importado e salvo');
+    }catch(e){
+      alert('Não foi possível importar este arquivo de backup.');
+    }
+  };
+  r.readAsText(file);
+}
+loadSaved();
+
+const root=document.getElementById('content'), sumBody=document.getElementById('sumBody');
+const filter=document.getElementById('filterDir'), search=document.getElementById('search');
+
+function parseBR(v){
+  if(v===null||v===undefined) return null;
+  const s=String(v).trim().replace(/\s/g,'').replace('%','');
+  if(!s) return null;
+  let z=s;
+  if(z.includes(',') && z.includes('.')) z=z.replace(/\./g,'').replace(',','.');
+  else z=z.replace(',','.');
+  z=z.replace(/[^0-9.\-]/g,'');
+  const n=Number(z); return Number.isFinite(n)?n:null;
+}
+function format(n){
+  if(n===null||!Number.isFinite(n)) return '—';
+  return new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(n);
+}
+function targetNum(x){ return parseBR(x); }
+function status(ind,res){
+  const t=targetNum(ind.target2026);
+  if(res===null) return ['Aguardando dados','warn'];
+  if(t===null) return ['Sem meta anual numérica','warn'];
+  const ok=ind.direction==='down'?res<=t:res>=t;
+  return ok?['Meta alcançada','ok']:['Em acompanhamento','bad'];
+}
+function isSuspicious(ind){
+  const f=ind.formula.toLowerCase(), u=ind.unit.toLowerCase();
+  return (
+    (u.includes('percent') && ind.multiplier===1 && ind.type==='ratio') ||
+    (f.includes('nº total') && f.includes('÷ nº de') && (ind.code==='2.3' || ind.code==='3.1.2' || ind.code==='6.1.4')) ||
+    (ind.code==='1.1.7') || (ind.code==='1.1.5') || (ind.code==='7.1.2')
+  );
+}
+function calc(ind,a,b){
+  if(ind.type==='direct') return a;
+  if(ind.type==='growth'){
+    if(a===null||b===null||b===0) return null;
+    return ((a-b)/b)*100;
+  }
+  if(a===null||b===null||b===0) return null;
+  return (a/b)*ind.multiplier;
+}
+function fieldLabels(ind){
+  if(ind.type==='direct') return ['Valor apurado'];
+  if(ind.type==='growth') return ['Valor do ano atual/corrente','Valor do ano anterior'];
+  let l1='Numerador – primeiro valor da fórmula';
+  let l2='Denominador – segundo valor da fórmula';
+  if(ind.code==='1.1.1') [l1,l2]=['População adscrita às equipes','População residente estimada'];
+  if(ind.code==='1.1.1-SB') [l1,l2]=['Nº de eSB implantadas','Nº de ESF'];
+  if(ind.code==='1.1.3') [l1,l2]=['NV de mães com 7+ consultas','Total de nascidos vivos'];
+  if(ind.code==='1.1.4') [l1,l2]=['NV de mães de 10 a 19 anos','Total de nascidos vivos'];
+  if(ind.code==='1.1.8') [l1,l2]=['Hipertensos com registro de PA','Total de hipertensos cadastrados/acompanhados'];
+  if(ind.code==='1.1.9') [l1,l2]=['Pessoas com DM e solicitação HbA1c','Total de pessoas com DM cadastradas'];
+  if(ind.code==='2.1.8') [l1,l2]=['Atendimentos domiciliares realizados','Atendimentos domiciliares programados'];
+  if(ind.code==='6.2.1') [l1,l2]=['Despesas próprias do Tesouro em saúde','Receita de impostos e transferências constitucionais'];
+  return [l1,l2];
+}
+function makeCard(ind,idx){
+  const labels=fieldLabels(ind);
+  const saved=SAVED[storageKey(ind,idx)]||{};
+  const card=document.createElement('article'); card.className='card'; card.dataset.idx=idx;
+  const fields = labels.map((lab,j)=>{
+    const sv=(saved.annual && saved.annual[j]!==undefined)?saved.annual[j]:'';
+    return `<div><label>${lab}</label><input type="number" min="0" step="any" data-v="${j}" value="${sv}"></div>`;
+  }).join('');
+  const suspicious=isSuspicious(ind);
+  card.innerHTML=`
+    <h2>${ind.code} · ${ind.description}</h2>
+    <div class="ind"><strong>Indicador:</strong> ${ind.indicator||'—'}</div>
+    <div class="meta"><span class="pill">Meta: ${ind.meta||'—'}</span><span class="pill">2026: ${ind.target2026||'—'}</span><span class="pill">Unidade: ${ind.unit||'não informada'}</span></div>
+    <div class="formula"><strong>Fórmula da PAS:</strong> ${ind.formula||'—'}</div>
+    <div class="fields ${labels.length===1?'one':''}">${fields}</div>
+    <div class="result"><div><div class="lbl">Resultado anual / acumulado</div><div class="val">—</div></div><div class="status warn">Aguardando dados</div></div>
+    <div class="quad">
+      <div class="quad-title">Apuração por quadrimestre</div>
+      <div class="quad-grid">
+        ${[1,2,3].map(q=>`
+          <div class="quad-box">
+            <strong>${q}º quadrimestre</strong>
+            ${labels.map((lab,j)=>`
+              <label>${labels.length===1?'Valor':(j===0?'Numerador':'Denominador')}</label>
+              <input type="number" min="0" step="any" data-q="${q}" data-qv="${j}" value="${(saved.quarters && saved.quarters[q] && saved.quarters[q][j]!==undefined)?saved.quarters[q][j]:''}">
+            `).join('')}
+            <div class="lbl" style="margin-top:6px">Resultado calculado pela fórmula da PAS</div>
+            <div data-qres="${q}" style="font-weight:800">—</div>
+          </div>`).join('')}
+      </div>
+      <div class="gapbox" data-gap>Informe os dados de cada quadrimestre. O sistema calcula o resultado conforme a fórmula da PAS e compara o desempenho com a meta anual.</div>
+      <div class="digisus">
+        <div class="digisus-title">Acompanhamento da meta no padrão DigiSUS</div>
+        <div class="digisus-grid">
+          <div><label>Meta anual usada pelo DigiSUS</label><input type="number" step="any" data-digi-meta value="${saved.digiMeta!==undefined?saved.digiMeta:(parseBR(ind.target2026) ?? '')}"></div>
+          <div><label>Polaridade</label><select data-polaridade>
+            <option value="1" ${(saved.polarity?saved.polarity==='1':ind.direction!=='down')?'selected':''}>Maior é melhor</option>
+            <option value="2" ${(saved.polarity?saved.polarity==='2':ind.direction==='down')?'selected':''}>Menor é melhor</option>
+          </select></div>
+          <div><label data-digi-total-label>% da meta alcançada</label><div class="digi-result" data-digi-total>—</div></div>
+        </div>
+        <div class="digi-note" data-digi-q>1º Q: — · 2º Q: — · 3º Q: —</div>
+        <div class="digi-note">Simulação DigiSUS: o resultado da PAS é considerado com 2 casas decimais, como seria lançado no campo “Resultado do Quadrimestre”. “Maior é melhor”: Resultado ÷ Meta × 100. “Menor é melhor”: [1 + (Meta − Resultado) ÷ Meta] × 100.</div>
+      </div>
+    </div>
+    ${suspicious?'<div class="note"><strong>Atenção:</strong> a fórmula/unidade deste indicador merece conferência técnica no documento antes do lançamento oficial.</div>':''}
+  `;
+  card.querySelectorAll('input').forEach(el=>el.addEventListener('input',()=>{
+    persistCard(card,ind,idx);
+    update();
+  }));
+  card.querySelectorAll('select[data-polaridade]').forEach(el=>el.addEventListener('change',()=>{
+    persistCard(card,ind,idx);
+    update();
+  }));
+  return card;
+}
+function render(){
+  const dirs=[...new Set(DATA.map(x=>x.diretriz))];
+  filter.innerHTML='<option value="">Todas as diretrizes</option>'+dirs.map(d=>`<option>${d}</option>`).join('');
+  document.getElementById('nDir').textContent=dirs.length;
+  document.getElementById('nInd').textContent=DATA.length;
+  draw();
+}
+function draw(){
+  const q=search.value.trim().toLowerCase(), fd=filter.value;
+  root.innerHTML='';
+  const groups=new Map();
+  DATA.forEach((ind,idx)=>{
+    const hay=(ind.code+' '+ind.description+' '+ind.indicator+' '+ind.formula).toLowerCase();
+    if(fd && ind.diretriz!==fd) return;
+    if(q && !hay.includes(q)) return;
+    if(!groups.has(ind.diretriz)) groups.set(ind.diretriz,[]);
+    groups.get(ind.diretriz).push([ind,idx]);
+  });
+  for(const [dir,arr] of groups){
+    const h=document.createElement('h2'); h.className='dir'; h.textContent=dir; root.appendChild(h);
+    const g=document.createElement('div'); g.className='grid';
+    arr.forEach(([ind,idx])=>g.appendChild(makeCard(ind,idx)));
+    root.appendChild(g);
+  }
+  update();
+}
+function round2(v){
+  return v===null || !Number.isFinite(v) ? null : Number(v.toFixed(2));
+}
+function digiPercent(resultado,meta,polaridade){
+  if(resultado===null || meta===null || meta===0) return null;
+  // O DigiSUS calcula sobre o resultado informado no campo.
+  // Nesta calculadora, simulamos esse lançamento com o resultado da PAS em 2 casas decimais.
+  const resultadoLancado=round2(resultado);
+  return String(polaridade)==='2'
+    ? (1 + (meta - resultadoLancado) / meta) * 100
+    : (resultadoLancado / meta) * 100;
+}
+function neededText(ind,accA,accB,accRes){
+  const t=targetNum(ind.target2026);
+  if(t===null) return 'Meta anual sem valor numérico para cálculo do saldo.';
+  if(accRes===null) return 'Preencha pelo menos um quadrimestre para calcular o saldo anual.';
+
+  if(ind.type==='direct'){
+    if(ind.direction==='down'){
+      const margin=t-accA;
+      return margin>=0
+        ? `Acumulado: ${format(accA)}. Limite anual: ${format(t)}. Margem disponível até o limite: ${format(margin)}.`
+        : `Acumulado: ${format(accA)}. O limite anual foi ultrapassado em ${format(Math.abs(margin))}.`;
+    }
+    const falta=Math.max(0,t-accA);
+    return falta===0
+      ? `Meta anual alcançada. Acumulado: ${format(accA)}.`
+      : `Faltam ${format(falta)} unidade(s) para alcançar a meta anual de ${format(t)}.`;
+  }
+
+  if(ind.type==='growth'){
+    return `Resultado consolidado: ${format(accRes)}%. Para indicador de crescimento, o saldo depende do valor-base do ano anterior.`;
+  }
+
+  if(accB===null || accB<=0) return 'Informe o denominador acumulado para calcular quanto falta.';
+  if(ind.multiplier<=0) return 'Não foi possível determinar o multiplicador da fórmula.';
+
+  const required=(t/ind.multiplier)*accB;
+
+  if(ind.direction==='down'){
+    const margin=required-accA;
+    return margin>=0
+      ? `Com denominador acumulado de ${format(accB)}, o numerador pode chegar até ${format(required)} para permanecer dentro da meta. Margem atual: ${format(margin)}.`
+      : `Com denominador acumulado de ${format(accB)}, o numerador máximo seria ${format(required)}. O acumulado excede esse limite em ${format(Math.abs(margin))}.`;
+  }
+
+  const missing=Math.max(0,required-accA);
+  return missing===0
+    ? `Meta anual alcançada no acumulado atual. Realizado no numerador: ${format(accA)}; necessário: ${format(required)}.`
+    : `Faltam aproximadamente ${format(Math.ceil(missing))} ocorrência(s)/pessoa(s) no numerador para alcançar a meta. Necessário: ${format(required)}; realizado: ${format(accA)}; denominador considerado: ${format(accB)}.`;
+}
+
+function update(){
+  sumBody.innerHTML='';
+  document.querySelectorAll('.card[data-idx]').forEach(card=>{
+    const ind=DATA[Number(card.dataset.idx)];
+
+    const vals=[...card.querySelectorAll('input[data-v]')].map(x=>parseBR(x.value));
+    const res=calc(ind,vals[0]??null,vals[1]??null);
+    const [txt,cls]=status(ind,res);
+    card.querySelector('.val').textContent=format(res)+(ind.unit&&ind.unit.toLowerCase().includes('percent')?'%':'');
+    const st=card.querySelector('.status'); st.textContent=txt; st.className='status '+cls;
+
+    let accA=0,accB=0,anyA=false,anyB=false;
+    const qResults={}, qValues={};
+    [1,2,3].forEach(q=>{
+      const qInputs=[...card.querySelectorAll(`input[data-q="${q}"]`)];
+      const qvals=qInputs.map(x=>parseBR(x.value));
+      qValues[q]=qvals;
+      const qres=calc(ind,qvals[0]??null,qvals[1]??null);
+      qResults[q]=qres;
+      const el=card.querySelector(`[data-qres="${q}"]`);
+      el.textContent=format(qres)+(ind.unit&&ind.unit.toLowerCase().includes('percent')?'%':'');
+      if(qvals[0]!==null){accA+=qvals[0];anyA=true;}
+      if(qvals.length>1 && qvals[1]!==null){accB+=qvals[1];anyB=true;}
+    });
+
+    // Para proporções/taxas, cada RQDA já representa a situação apurada naquele momento.
+    // Portanto, NÃO somamos numeradores e denominadores dos três quadrimestres.
+    // O consolidado usa o quadrimestre mais recente que estiver preenchido.
+    let latestQ=null;
+    [1,2,3].forEach(q=>{ if(qResults[q]!==null) latestQ=q; });
+
+    let accRes=null, gapA=null, gapB=null;
+    if(ind.type==='ratio' || ind.type==='growth'){
+      if(latestQ!==null){
+        accRes=qResults[latestQ];
+        gapA=qValues[latestQ]?.[0] ?? null;
+        gapB=qValues[latestQ]?.[1] ?? null;
+      }
+    } else if(anyA){
+      // Indicadores de contagem/produção permanecem acumuláveis.
+      accRes=accA;
+      gapA=accA;
+      gapB=anyB?accB:null;
+    }
+
+    card.querySelector('[data-gap]').textContent=neededText(ind,gapA,gapB,accRes);
+
+    const digiMeta=parseBR(card.querySelector('[data-digi-meta]').value);
+    const pol=card.querySelector('[data-polaridade]').value;
+    const totalLabel=card.querySelector('[data-digi-total-label]');
+    totalLabel.textContent=(ind.type==='ratio' || ind.type==='growth')
+      ? '% da meta alcançada – último quadrimestre informado'
+      : '% da meta alcançada – acumulado dos períodos informados';
+
+    const digiTotal=digiPercent(accRes,digiMeta,pol);
+    const digiTotalEl=card.querySelector('[data-digi-total]');
+    if(digiMeta===null){
+      digiTotalEl.textContent='Meta anual não informada';
+    }else if(digiMeta===0){
+      digiTotalEl.textContent='Não calculável automaticamente (meta = 0)';
+    }else{
+      digiTotalEl.textContent=digiTotal===null?'—':format(digiTotal)+'%';
+    }
+
+    if(digiMeta===null){
+      card.querySelector('[data-digi-q]').textContent='Informe a meta anual para calcular o percentual de alcance.';
+    }else if(digiMeta===0){
+      card.querySelector('[data-digi-q]').textContent='Meta igual a zero: o código do DigiSUS não executa o cálculo percentual automático.';
+    }else{
+      card.querySelector('[data-digi-q]').textContent=[1,2,3].map(q=>{
+        const d=digiPercent(qResults[q],digiMeta,pol);
+        return `${q}º Q: ${d===null?'—':format(d)+'%'}`;
+      }).join(' · ');
+    }
+
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${ind.diretriz.replace(/^Diretriz /,'D. ')}</td><td>${ind.code}</td><td>${ind.indicator}</td><td>${ind.target2026||'—'}</td><td>${format(res)}</td><td>${txt}</td>`;
+    sumBody.appendChild(tr);
+  });
+}
+filter.addEventListener('change',draw);
+search.addEventListener('input',draw);
+document.getElementById('clear').addEventListener('click',()=>{
+  if(!confirm('Deseja apagar todos os dados digitados e salvos desta calculadora neste navegador?')) return;
+  clearSavedData();
+  draw();
+  showSaveStatus('Dados salvos apagados');
+});
+document.getElementById('exportData').addEventListener('click',downloadBackup);
+document.getElementById('importData').addEventListener('change',e=>{
+  const file=e.target.files && e.target.files[0];
+  if(file) importBackupFile(file);
+  e.target.value='';
+});
+document.getElementById('print').addEventListener('click',()=>window.print());
+render();
+showSaveStatus(Object.keys(SAVED).length
+  ? 'Dados anteriores restaurados automaticamente'
+  : 'Dados salvos automaticamente neste navegador');
+</script>
+</body>
+</html>
